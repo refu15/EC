@@ -109,7 +109,7 @@ export default function Dashboard() {
                 <CardHeader>
                     <CardTitle>主要機能</CardTitle>
                 </CardHeader>
-                <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+                <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <Link href="/analytics">
                         <Button variant="outline" className="h-32 flex flex-col w-full bg-transparent">
                             <BarChart3 className="h-8 w-8 mb-2 text-blue-600" />
@@ -140,28 +140,13 @@ export default function Dashboard() {
                             <span className="text-sm text-center">リアルタイム顧客サポート</span>
                         </Button>
                     </Link>
+                     <Link href="/ai-scenario-analysis">
+                        <Button variant="outline" className="h-32 flex flex-col w-full bg-transparent">
+                            <Brain className="h-8 w-8 mb-2 text-indigo-600" />
+                            <span className="text-sm text-center">AIシナリオ分析</span>
+                        </Button>
+                    </Link>
                 </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Brain className="h-5 w-5 mr-2 text-indigo-600" />
-                  AIシナリオ分析
-                </CardTitle>
-                <CardDescription>もしもの状況をAIでシミュレーション</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-gray-600 mb-4">
-                  「広告費を増やしたら？」「競合がセールを始めたら？」といったシナリオをAIが分析し、ビジネス判断をサポートします。
-                </p>
-                <Link href="/ai-scenario-analysis">
-                  <Button className="w-full" variant="outline">
-                    <Zap className="h-4 w-4 mr-2" />
-                    シナリオ分析を試す
-                  </Button>
-                </Link>
-              </CardContent>
             </Card>
           </div>
         </div>

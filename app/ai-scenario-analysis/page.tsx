@@ -4,8 +4,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ArrowLeft, Brain, TrendingUp, AlertTriangle, Zap, Target, Play } from "lucide-react"
+import { ArrowLeft, Brain, TrendingUp, AlertTriangle, Zap, Target, Play, BarChart3 } from "lucide-react"
 import Link from "next/link"
+import { Slider } from "@/components/ui/slider"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Label } from "@/components/ui/label"
+import { Progress } from "@/components/ui/progress"
 
 export default function AIScenarioAnalysis() {
   return (
@@ -32,186 +36,256 @@ export default function AIScenarioAnalysis() {
 
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
-          {/* AI Analysis Overview */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">AI予測精度</CardTitle>
-                <Brain className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-blue-600">94.2%</div>
-                <p className="text-xs text-muted-foreground">（サンプル値）</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">異常検知</CardTitle>
-                <AlertTriangle className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-red-600">3件</div>
-                <p className="text-xs text-muted-foreground">（サンプル値）</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">自動最適化</CardTitle>
-                <Zap className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-green-600">12件</div>
-                <p className="text-xs text-muted-foreground">（サンプル値）</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">予測売上</CardTitle>
-                <TrendingUp className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">¥3.2M</div>
-                <p className="text-xs text-muted-foreground">（サンプル値）</p>
-              </CardContent>
-            </Card>
-          </div>
-
           <Tabs defaultValue="scenarios" className="space-y-6">
             <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="scenarios">シナリオ分析</TabsTrigger>
-              <TabsTrigger value="anomaly">異常検知</TabsTrigger>
-              <TabsTrigger value="optimization">自動最適化</TabsTrigger>
+              <TabsTrigger value="scenarios">多変数シナリオ分析</TabsTrigger>
+              <TabsTrigger value="optimization">マーケティング予算最適化</TabsTrigger>
+              <TabsTrigger value="proposals">AI施策提案</TabsTrigger>
             </TabsList>
 
-            {/* シナリオ分析 */}
+            {/* 多変数シナリオ分析 */}
             <TabsContent value="scenarios" className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <Target className="h-5 w-5 mr-2" />
-                    シナリオ分析
-                  </CardTitle>
-                  <CardDescription>
-                    マーケティング予算や競合の動向など、様々な要因を組み合わせて将来の売上を予測します。
-                    <br />
-                    <strong className="text-blue-600">（この機能はGemini APIを利用して、シナリオに基づいた売上予測のサンプルを提示します）</strong>
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="p-4 border rounded-lg bg-gray-50">
-                    <h4 className="font-medium mb-2">シナリオ例：夏のセールキャンペーン</h4>
-                    <p className="text-sm text-gray-700 mb-2">
-                      - マーケティング予算：+30%<br />
-                      - 競合：同様のキャンペーンを実施<br />
-                      - 天候：猛暑
-                    </p>
-                    <Button>
-                      <Play className="h-4 w-4 mr-2" />
-                      AIに予測させる (ダミー)
-                    </Button>
-                  </div>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center">
+                      <Target className="h-5 w-5 mr-2" />
+                      シナリオ設定
+                    </CardTitle>
+                    <CardDescription>複数要因を組み合わせて詳細予測</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <div className="space-y-4">
+                      <div>
+                        <Label className="text-sm font-medium">マーケティング予算変動</Label>
+                        <Slider defaultValue={[0]} max={50} min={-30} step={5} className="mt-2" />
+                        <div className="flex justify-between text-xs text-gray-500 mt-1">
+                          <span>-30%</span>
+                          <span>現状</span>
+                          <span>+50%</span>
+                        </div>
+                      </div>
 
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>AIによる予測結果</CardTitle>
-                    </CardHeader>
-                    <CardContent>
+                      <div>
+                        <Label className="text-sm font-medium">競合価格変動</Label>
+                        <Slider defaultValue={[0]} max={20} min={-20} step={5} className="mt-2" />
+                        <div className="flex justify-between text-xs text-gray-500 mt-1">
+                          <span>-20%</span>
+                          <span>現状</span>
+                          <span>+20%</span>
+                        </div>
+                      </div>
+
+                      <div>
+                        <Label className="text-sm font-medium">季節要因</Label>
+                        <Select defaultValue="normal">
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="peak">繁忙期</SelectItem>
+                            <SelectItem value="normal">通常期</SelectItem>
+                            <SelectItem value="low">閑散期</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <Button className="w-full" disabled>
+                        <Play className="h-4 w-4 mr-2" />
+                        シナリオ実行 (ダミー)
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>シナリオ予測結果</CardTitle>
+                    <CardDescription>AIによる売上予測</CardDescription>
+                  </CardHeader>
+                  <CardContent>
                        <p className="text-gray-800">
                         このシナリオでは、売上は通常期に比べて<span className="font-bold text-green-600">15%〜25%向上</span>する可能性が高いと予測されます。
                         ただし、競合のキャンペーン内容によっては、効果が相殺されるリスクも考慮に入れるべきです。
-                        AIは、猛暑により「清涼飲料」「エアコン」「日焼け止め」カテゴリの需要が特に高まると分析しています。
+                        AIは、繁忙期により「清涼飲料」「エアコン」「日焼け止め」カテゴリの需要が特に高まると分析しています。
                       </p>
                       <p className="text-xs text-gray-500 mt-4">※この文章はGemini APIによって生成されたサンプルです。</p>
-                    </CardContent>
-                  </Card>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            {/* 異常検知 */}
-            <TabsContent value="anomaly" className="space-y-6">
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center">
-                            <AlertTriangle className="h-5 w-5 mr-2" />
-                            AIによる異常検知
-                        </CardTitle>
-                        <CardDescription>
-                            売上、コンバージョン率、アクセス数などのKPIをリアルタイムで監視し、通常と異なるパターンを検知します。
-                            <br />
-                            <strong className="text-blue-600">（この機能は、検知された異常のサンプルとその原因分析の例を示します）</strong>
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div className="p-4 border rounded-lg bg-red-50">
-                            <div className="flex justify-between items-center mb-2">
-                                <h4 className="font-medium text-red-800">検知された異常：コンバージョン率の急落</h4>
-                                <Badge variant="destructive">重要</Badge>
-                            </div>
-                            <p className="text-sm text-red-700">
-                                本日14:30頃から、コンバージョン率が通常より30%低下しています。
-                            </p>
-                        </div>
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>AIによる原因分析と推奨アクション</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-gray-800">
-                                    AI分析の結果、<span className="font-bold">決済ページでのエラーが多発</span>している可能性が指摘されています。
-                                    また、特定のブラウザ（Chromeモバイル版）でのみ発生しているようです。
-                                    <br /><br />
-                                    <span className="font-bold">推奨アクション：</span>決済システムのログを確認し、該当ブラウザでのテストを直ちに実施してください。
-                                </p>
-                                <p className="text-xs text-gray-500 mt-4">※この文章はGemini APIによって生成されたサンプルです。</p>
-                            </CardContent>
-                        </Card>
-                    </CardContent>
+                  </CardContent>
                 </Card>
+              </div>
             </TabsContent>
 
-            {/* 自動最適化 */}
+            {/* マーケティング予算最適化 */}
             <TabsContent value="optimization" className="space-y-6">
                 <Card>
                     <CardHeader>
                         <CardTitle className="flex items-center">
                             <Zap className="h-5 w-5 mr-2" />
-                            AIによる自動最適化
+                            マーケティング予算最適化
                         </CardTitle>
                         <CardDescription>
-                            広告予算の配分、商品の価格設定、レコメンドなどをAIが自動で調整し、売上の最大化を目指します。
-                            <br />
-                            <strong className="text-blue-600">（この機能は、AIによる最適化提案のサンプルを示します）</strong>
+                            チャネル別ROIを最大化するための予算配分を提案します。
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-4">
+                          <h4 className="font-medium">現在の予算配分とROI</h4>
+                          {[
+                            { channel: "Google広告", current: 30, roi: 320 },
+                            { channel: "Facebook広告", current: 25, roi: 450 },
+                            { channel: "Instagram広告", current: 20, roi: 380 },
+                            { channel: "SEO", current: 15, roi: 280 },
+                            { channel: "メール", current: 10, roi: 180 },
+                          ].map((item, index) => (
+                            <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                              <div className="flex-1">
+                                <div className="font-medium text-sm">{item.channel}</div>
+                                <div className="text-xs text-gray-600">ROI: {item.roi}%</div>
+                              </div>
+                              <div className="text-right">
+                                <div className="text-sm font-medium">{item.current}%</div>
+                                <div className="text-xs text-gray-500">現在配分</div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        <div className="space-y-4">
+                          <h4 className="font-medium">AIによる最適化提案</h4>
+                           {[
+                            { channel: "Google広告", optimal: 25 },
+                            { channel: "Facebook広告", optimal: 35 },
+                            { channel: "Instagram広告", optimal: 25 },
+                            { channel: "SEO", optimal: 10 },
+                            { channel: "メール", optimal: 5 },
+                          ].map((item, index) => (
+                            <div key={index} className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                              <div className="font-medium text-sm">{item.channel}</div>
+                              <div className="text-right">
+                                <div className="font-medium text-blue-600">{item.optimal}%</div>
+                                <div className="text-xs text-gray-500">最適配分</div>
+                              </div>
+                            </div>
+                          ))}
+                           <Card>
+                                <CardHeader>
+                                    <CardTitle className="text-base">最適化効果予測</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="text-center mb-2">
+                                        <p className="text-2xl font-bold text-green-600">+¥1.2M</p>
+                                        <p className="text-sm text-gray-600">月間売上向上予測</p>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-2 text-xs text-center">
+                                        <p>現在ROI: 312%</p>
+                                        <p className="text-green-600">最適化後ROI: 428%</p>
+                                        <p>CPA改善: -23%</p>
+                                        <p className="text-green-600">獲得数向上: +34%</p>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </div>
+                    </CardContent>
+                </Card>
+            </TabsContent>
+
+            {/* AI施策提案 */}
+            <TabsContent value="proposals" className="space-y-6">
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center">
+                            <Brain className="h-5 w-5 mr-2" />
+                            AIによる施策提案
+                        </CardTitle>
+                        <CardDescription>
+                            分析結果に基づき、AIが具体的なアクションを3つ以上提案します。
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="p-4 border rounded-lg bg-green-50">
-                            <h4 className="font-medium text-green-800 mb-2">最適化提案：広告予算の再配分</h4>
+                            <h4 className="font-medium text-green-800 mb-2">提案1：広告予算の再配分</h4>
                             <p className="text-sm text-green-700">
-                                現在のデータに基づくと、Instagram広告のROIがGoogle広告を上回っています。
-                                予算の一部をGoogleからInstagramにシフトすることで、全体の広告効果が<span className="font-bold">8%向上</span>すると予測されます。
+                                Facebook広告とInstagram広告のROIが非常に高いため、これらのチャネルへの予算をそれぞれ10%、5%増額します。
+                                比較的ROIの低いGoogle広告とメールの予算を削減し、全体の広告効果を最大化します。
                             </p>
                         </div>
-                         <Card>
-                            <CardHeader>
-                                <CardTitle>AIによるレコメンド最適化</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-gray-800">
-                                    AIは「商品A」と「商品B」の同時購入率が高いことを発見しました。
-                                    これらの商品をセットで割引販売する、または商品ページでお互いをレコメンドすることで、
-                                    平均注文額（AOV）が<span className="font-bold">5%向上</span>する可能性があります。
-                                </p>
-                                <p className="text-xs text-gray-500 mt-4">※この文章はGemini APIによって生成されたサンプルです。</p>
-                            </CardContent>
-                        </Card>
+                        <div className="p-4 border rounded-lg bg-blue-50">
+                            <h4 className="font-medium text-blue-800 mb-2">提案2：高ROIチャネル向けクリエイティブ強化</h4>
+                            <p className="text-sm text-blue-700">
+                                最も効果の高いFacebook広告向けに、動画広告やカルーセル広告など、エンゲージメントを高める新しいクリエイティブを3パターン以上テストし、さらなるROI向上を目指します。
+                            </p>
+                        </div>
+                        <div className="p-4 border rounded-lg bg-purple-50">
+                            <h4 className="font-medium text-purple-800 mb-2">提案3：クロスセル促進キャンペーン</h4>
+                            <p className="text-sm text-purple-700">
+                                AI分析で特定された「同時購入されやすい商品ペア」に基づき、セット割引やレコメンドを強化するキャンペーンを実施します。これにより、平均注文額（AOV）の5%向上を目指します。
+                            </p>
+                        </div>
+                         <div className="p-4 border rounded-lg bg-yellow-50">
+                            <h4 className="font-medium text-yellow-800 mb-2">提案4：SEOコンテンツの拡充</h4>
+                            <p className="text-sm text-yellow-700">
+                                ROIが安定しているSEOについて、「商品名 + 使い方」「カテゴリ名 + おすすめ」などのキーワードでブログコンテンツを作成し、オーガニック検索からの流入をさらに増やします。
+                            </p>
+                        </div>
                     </CardContent>
                 </Card>
             </TabsContent>
           </Tabs>
+          <Card key="1" className="w-full max-w-2xl mx-auto">
+            <CardHeader className="flex flex-col gap-1">
+              <CardTitle className="text-xl">AI-Powered Business Simulator</CardTitle>
+              <CardDescription>
+                Test the potential impact of your business decisions before you make them. Our AI will simulate the
+                effects on your key metrics.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-6">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="price-change">Price Change (%)</Label>
+                  <Input id="price-change" placeholder="e.g., -10 for 10% decrease" type="number" />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="marketing-budget">Marketing Budget ($)</Label>
+                  <Input id="marketing-budget" placeholder="e.g., 5000" type="number" />
+                </div>
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="new-feature">New Feature Launch</Label>
+                <Select id="new-feature">
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a feature" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">None</SelectItem>
+                    <SelectItem value="loyalty-program">Loyalty Program</SelectItem>
+                    <SelectItem value="referral-program">Referral Program</SelectItem>
+                    <SelectItem value="free-shipping">Free Shipping over $50</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <Button className="w-full">Run Simulation</Button>
+            </CardContent>
+            <CardFooter className="grid gap-4">
+              <div className="text-center text-sm">
+                <p className="font-medium">Predicted Impact</p>
+                <p className="text-gray-500">Based on the simulation, here's the potential impact on your business.</p>
+              </div>
+              <div className="grid grid-cols-3 gap-4 text-center">
+                <div className="flex flex-col gap-1">
+                  <p className="text-2xl font-bold text-green-500">+5.2%</p>
+                  <p className="text-xs text-gray-500">Revenue</p>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <p className="text-2xl font-bold text-green-500">+3.1%</p>
+                  <p className="text-xs text-gray-500">Conversion Rate</p>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <p className="text-2xl font-bold text-red-500">-1.5%</p>
+                  <p className="text-xs text-gray-500">Customer Churn</p>
+                </div>
+              </div>
+            </CardFooter>
+          </Card>
         </div>
       </main>
     </div>

@@ -3,9 +3,12 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { ArrowLeft, Star, TrendingUp, Users, Eye } from "lucide-react"
+import React from "react"
+import { ArrowLeft, Star, TrendingUp, Eye } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
+
+import { recommendations } from "@/lib/sample-recommendations"
 
 export default function Recommendations() {
   return (
@@ -62,7 +65,7 @@ export default function Recommendations() {
                 <TrendingUp className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">¥890K</div>
+                <div className="text-2xl font-bold">¥{recommendations.reduce((acc,r)=>acc+r.revenueContribution,0).toLocaleString()}</div>
                 <p className="text-xs text-muted-foreground">（サンプル値）</p>
               </CardContent>
             </Card>
@@ -80,6 +83,26 @@ export default function Recommendations() {
           </div>
 
           <div className="space-y-8">
+            {recommendations.map((rec) => (
+              <Card key={rec.id}>
+                <CardHeader>
+                  <CardTitle className="flex items-center justify-between">
+                    <span>{rec.title}</span>
+                    <Badge variant="outline">売上貢献 ¥{rec.revenueContribution.toLocaleString()}</Badge>
+                  </CardTitle>
+                  <CardDescription>{rec.description}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm font-medium mb-2">クロスセルにおすすめ:</p>
+                  <ul className="list-disc list-inside text-sm text-gray-700">
+                    {rec.crossSell.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            ))}
+            <hr className="my-8"/>
             <Card>
               <CardHeader>
                 <CardTitle>「あなたへのおすすめ」の例</CardTitle>
@@ -122,7 +145,7 @@ export default function Recommendations() {
               </CardContent>
             </Card>
           </div>
-           <p className="text-xs text-gray-500 mt-4 text-center">※表示されている商品はサンプルです。</p>
+          <p className="text-xs text-gray-500 mt-4 text-center">※表示されている商品はサンプルです。</p>
         </div>
       </main>
     </div>

@@ -29,6 +29,21 @@ export default function Dashboard() {
               </div>
             </div>
             <div className="flex items-center space-x-4">
+              <Link href="/customers">
+                <Button variant="outline">顧客分析</Button>
+              </Link>
+              <Link href="/campaigns">
+                <Button variant="outline">マーケ自動化</Button>
+              </Link>
+              <Link href="/recommendations">
+                <Button variant="outline">レコメンド</Button>
+              </Link>
+              <Link href="/scenarios">
+                <Button variant="outline">シナリオ分析</Button>
+              </Link>
+              <Link href="/proposals">
+                <Button variant="outline">施策提案</Button>
+              </Link>
               <Button variant="outline" disabled>設定</Button>
               <Button variant="outline" disabled>アカウント</Button>
             </div>

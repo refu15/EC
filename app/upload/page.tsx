@@ -12,6 +12,7 @@ import { calculateKpis } from "@/lib/kpi"
 import { getProposals } from "@/lib/proposals"
 import { useRouter } from "next/navigation"
 import { supabase } from "@/lib/supabase"
+import { toast } from "sonner"
 
 export default function UploadPage() {
     const { setOrders, setKpis, setPreviousKpis, setProposals } = useAppState()
@@ -22,7 +23,7 @@ export default function UploadPage() {
         if (file) {
             const { data: { user } } = await supabase.auth.getUser()
             if (!user) {
-                alert("Please log in to upload data.")
+                toast.error("Please log in to upload data.")
                 return
             }
 
@@ -53,13 +54,14 @@ export default function UploadPage() {
                     }])
 
                     if (error) {
-                        alert(error.message)
+                        toast.error(error.message)
                         return
                     }
 
                     const proposals = getProposals(kpis, dummyPreviousKpis)
                     setProposals(proposals)
 
+                    toast.success("データが正常にアップロードされました。")
                     router.push("/")
                 },
             });

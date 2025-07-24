@@ -18,14 +18,17 @@ import { PolicyModal } from "@/components/ui/policy-modal"
 import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabase"
 import { useRouter } from "next/navigation"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export default function Dashboard() {
   const { kpis, proposals, setProposals, previousKpis } = useAppState()
   const [aiCommentary, setAiCommentary] = useState("")
+  const [loading, setLoading] = useState(true)
   const router = useRouter()
 
   useEffect(() => {
     const getUserAndData = async () => {
+      setLoading(true)
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) {
         router.push("/login")
@@ -40,7 +43,8 @@ export default function Dashboard() {
         .limit(2)
 
       if (error) {
-        alert(error.message)
+        toast.error(error.message)
+        setLoading(false)
         return
       }
 
@@ -58,6 +62,7 @@ export default function Dashboard() {
             })
         }
       }
+      setLoading(false)
     }
     getUserAndData()
   }, [])
@@ -79,7 +84,7 @@ export default function Dashboard() {
   const handleTryIt = async (id: number, status: string) => {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) {
-        alert("Please log in to record your action.")
+        toast.error("Please log in to record your action.")
         return
     }
 
@@ -90,9 +95,14 @@ export default function Dashboard() {
     }])
 
     if (error) {
-        alert(error.message)
+        toast.error(error.message)
     } else {
-        setProposals(proposals.map(p => p.id === id ? { ...p, tried: true } : p))
+        if (status === 'tried') {
+            toast.success("施策を実行しました！")
+            setProposals(proposals.map(p => p.id === id ? { ...p, tried: true } : p))
+        } else {
+            toast.info("フィードバックを記録しました。")
+        }
     }
   }
 
@@ -102,6 +112,20 @@ export default function Dashboard() {
   }
 
   const triedProposalsCount = proposals.filter(p => p.tried).length
+
+  if (loading) {
+    return (
+        <div className="min-h-screen bg-gray-50 p-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <Skeleton className="h-24" />
+                <Skeleton className="h-24" />
+                <Skeleton className="h-24" />
+                <Skeleton className="h-24" />
+            </div>
+            <Skeleton className="h-48" />
+        </div>
+    )
+  }
 
   if (!kpis || !previousKpis) {
     return (

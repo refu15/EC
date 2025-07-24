@@ -84,23 +84,46 @@ const allProposals: Proposal[] = [
 
 export function getProposals(kpi: Kpi, previousKpi: Kpi): Proposal[] {
   const proposals: Proposal[] = [];
+  const salesChange = kpi.sales - previousKpi.sales;
+  const newCustomersChange = kpi.newCustomers - previousKpi.newCustomers;
+  const conversionRateChange = kpi.conversionRate - previousKpi.conversionRate;
 
-  if (kpi.sales < previousKpi.sales) {
-    proposals.push(allProposals.find(p => p.id === 5)!);
+  // Scenario 1: Sales are down
+  if (salesChange < 0) {
+    proposals.push(allProposals.find(p => p.id === 5)!); // 送料無料キャンペーン
+    proposals.push(allProposals.find(p => p.id === 1)!); // リピーター向けクーポン
   }
 
-  if (kpi.newCustomers < previousKpi.newCustomers) {
-    proposals.push(allProposals.find(p => p.id === 2)!);
+  // Scenario 2: New customers are down
+  if (newCustomersChange < 0) {
+    proposals.push(allProposals.find(p => p.id === 2)!); // SNSキャンペーン
   }
 
-  if (kpi.conversionRate < previousKpi.conversionRate) {
-    proposals.push(allProposals.find(p => p.id === 3)!);
-    proposals.push(allProposals.find(p => p.id === 4)!);
+  // Scenario 3: Conversion rate is down
+  if (conversionRateChange < 0) {
+    proposals.push(allProposals.find(p => p.id === 3)!); // サイトTOPの訴求バナーを変更
+    proposals.push(allProposals.find(p => p.id === 4)!); // カゴ落ち顧客へのリマインダーメール
   }
 
+  // Scenario 4: Sales are up, but conversion rate is down
+  if (salesChange > 0 && conversionRateChange < 0) {
+      proposals.push(allProposals.find(p => p.id === 3)!);
+  }
+
+  // Fill up with default proposals if less than 3
   if (proposals.length < 3) {
-    proposals.push(allProposals.find(p => p.id === 1)!);
+    const defaultProposals = [1, 2, 5];
+    for (const id of defaultProposals) {
+      if (proposals.length < 3 && !proposals.some(p => p.id === id)) {
+        proposals.push(allProposals.find(p => p.id === id)!);
+      }
+    }
   }
 
-  return proposals.slice(0, 3);
+  // Remove duplicates and return top 3
+  const uniqueProposals = Array.from(new Set(proposals.map(p => p.id))).map(id => {
+      return proposals.find(p => p.id === id)!
+  })
+
+  return uniqueProposals.slice(0, 3);
 }

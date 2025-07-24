@@ -8,6 +8,7 @@ import { supabase } from "@/lib/supabase"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import { toast } from "sonner"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -20,8 +21,9 @@ export default function LoginPage() {
       password,
     })
     if (error) {
-      alert(error.message)
+      toast.error(error.message)
     } else {
+      toast.success("ログインしました。")
       router.push("/")
     }
   }

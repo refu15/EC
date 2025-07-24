@@ -8,6 +8,7 @@ import { supabase } from "@/lib/supabase"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import { toast } from "sonner"
 
 export default function SignupPage() {
   const [email, setEmail] = useState("")
@@ -20,13 +21,13 @@ export default function SignupPage() {
       password,
     })
     if (error) {
-      alert(error.message)
+      toast.error(error.message)
     } else if (data.user) {
       const { error: insertError } = await supabase.from('users').insert([{ id: data.user.id, email: data.user.email }])
       if (insertError) {
-        alert(insertError.message)
+        toast.error(insertError.message)
       } else {
-        alert("確認メールを送信しました。")
+        toast.success("確認メールを送信しました。")
         router.push("/login")
       }
     }

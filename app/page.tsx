@@ -16,10 +16,23 @@ import Link from "next/link"
 import { useAppState } from "@/hooks/use-app-state"
 import { PolicyModal } from "@/components/ui/policy-modal"
 import { useEffect, useState } from "react"
+import { supabase } from "@/lib/supabase"
+import { useRouter } from "next/navigation"
 
 export default function Dashboard() {
   const { kpis, proposals, setProposals, previousKpis } = useAppState()
   const [aiCommentary, setAiCommentary] = useState("")
+  const router = useRouter()
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        router.push("/login")
+      }
+    }
+    getUser()
+  }, [])
 
   useEffect(() => {
     if (kpis && previousKpis) {
@@ -37,6 +50,11 @@ export default function Dashboard() {
 
   const handleTryIt = (id: number) => {
     setProposals(proposals.map(p => p.id === id ? { ...p, tried: true } : p))
+  }
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+    router.push("/login")
   }
 
   const triedProposalsCount = proposals.filter(p => p.tried).length
@@ -71,8 +89,7 @@ export default function Dashboard() {
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <Button variant="outline" disabled>設定</Button>
-              <Button variant="outline" disabled>アカウント</Button>
+              <Button variant="outline" onClick={handleLogout}>ログアウト</Button>
             </div>
           </div>
         </div>

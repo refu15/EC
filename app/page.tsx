@@ -25,13 +25,41 @@ export default function Dashboard() {
   const router = useRouter()
 
   useEffect(() => {
-    const getUser = async () => {
+    const getUserAndData = async () => {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) {
         router.push("/login")
+        return
+      }
+
+      const { data: kpiData, error } = await supabase
+        .from('kpi_data')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(2)
+
+      if (error) {
+        alert(error.message)
+        return
+      }
+
+      if (kpiData && kpiData.length > 0) {
+        setKpis(kpiData[0])
+        if (kpiData.length > 1) {
+          setPreviousKpis(kpiData[1])
+        } else {
+            // TODO: Replace with actual previous data logic
+            setPreviousKpis({
+                sales: 2000000,
+                newCustomers: 200,
+                conversionRate: 3.5,
+                averageOrderValue: 8000,
+            })
+        }
       }
     }
-    getUser()
+    getUserAndData()
   }, [])
 
   useEffect(() => {
@@ -48,8 +76,24 @@ export default function Dashboard() {
     }
   }, [kpis, previousKpis])
 
-  const handleTryIt = (id: number) => {
-    setProposals(proposals.map(p => p.id === id ? { ...p, tried: true } : p))
+  const handleTryIt = async (id: number, status: string) => {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+        alert("Please log in to record your action.")
+        return
+    }
+
+    const { error } = await supabase.from('policy_history').insert([{
+        user_id: user.id,
+        proposal_id: id,
+        status: status,
+    }])
+
+    if (error) {
+        alert(error.message)
+    } else {
+        setProposals(proposals.map(p => p.id === id ? { ...p, tried: true } : p))
+    }
   }
 
   const handleLogout = async () => {

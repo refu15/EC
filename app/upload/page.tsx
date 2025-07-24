@@ -11,17 +11,24 @@ import Papa from "papaparse"
 import { calculateKpis } from "@/lib/kpi"
 import { getProposals } from "@/lib/proposals"
 import { useRouter } from "next/navigation"
+import { supabase } from "@/lib/supabase"
 
 export default function UploadPage() {
     const { setOrders, setKpis, setPreviousKpis, setProposals } = useAppState()
     const router = useRouter()
 
-    const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0]
         if (file) {
+            const { data: { user } } = await supabase.auth.getUser()
+            if (!user) {
+                alert("Please log in to upload data.")
+                return
+            }
+
             Papa.parse(file, {
                 header: true,
-                complete: (results) => {
+                complete: async (results) => {
                     const orders = results.data as any[]
                     setOrders(orders)
 
@@ -36,6 +43,19 @@ export default function UploadPage() {
 
                     const kpis = calculateKpis(orders, 10000) // Assuming 10000 visitors for now
                     setKpis(kpis)
+
+                    const { error } = await supabase.from('kpi_data').insert([{
+                        user_id: user.id,
+                        sales: kpis.sales,
+                        new_customers: kpis.newCustomers,
+                        conversion_rate: kpis.conversionRate,
+                        average_order_value: kpis.averageOrderValue,
+                    }])
+
+                    if (error) {
+                        alert(error.message)
+                        return
+                    }
 
                     const proposals = getProposals(kpis, dummyPreviousKpis)
                     setProposals(proposals)

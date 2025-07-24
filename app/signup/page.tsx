@@ -15,15 +15,20 @@ export default function SignupPage() {
   const router = useRouter()
 
   const handleSignup = async () => {
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
     })
     if (error) {
       alert(error.message)
-    } else {
-      alert("確認メールを送信しました。")
-      router.push("/login")
+    } else if (data.user) {
+      const { error: insertError } = await supabase.from('users').insert([{ id: data.user.id, email: data.user.email }])
+      if (insertError) {
+        alert(insertError.message)
+      } else {
+        alert("確認メールを送信しました。")
+        router.push("/login")
+      }
     }
   }
 

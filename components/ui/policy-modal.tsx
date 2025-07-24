@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Check } from "lucide-react"
 
-export function PolicyModal({ proposal, onTryIt, children }: { proposal: any, onTryIt: (id: number) => void, children: React.ReactNode }) {
+export function PolicyModal({ proposal, onTryIt, children }: { proposal: any, onTryIt: (id: number, status: string) => void, children: React.ReactNode }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -49,9 +49,9 @@ export function PolicyModal({ proposal, onTryIt, children }: { proposal: any, on
           </div>
         </div>
         <div className="flex justify-end space-x-2">
-            <Button variant="ghost">あとで</Button>
-            <Button variant="outline">見送る</Button>
-            <Button onClick={() => onTryIt(proposal.id)} disabled={proposal.tried}>
+            <Button variant="ghost" onClick={() => onTryIt(proposal.id, 'later')}>あとで</Button>
+            <Button variant="outline" onClick={() => onTryIt(proposal.id, 'dismissed')}>見送る</Button>
+            <Button onClick={() => onTryIt(proposal.id, 'tried')} disabled={proposal.tried}>
               <Check className="h-4 w-4 mr-2" />
               {proposal.tried ? "実施済み" : "やってみる"}
             </Button>

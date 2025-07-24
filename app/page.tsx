@@ -14,6 +14,7 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
+import { PolicyModal } from "@/components/ui/policy-modal"
 
 export default function Dashboard() {
   const [proposals, setProposals] = useState([
@@ -167,21 +168,23 @@ export default function Dashboard() {
               </CardHeader>
               <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {proposals.map((proposal) => (
-                  <Card key={proposal.id} className={proposal.tried ? "bg-green-50" : ""}>
-                    <CardHeader>
-                      <CardTitle className="text-base">{proposal.title}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex justify-between text-xs mb-4">
-                        <span className="font-semibold">コスト: <span className="text-blue-600">{proposal.cost}</span></span>
-                        <span className="font-semibold">ROI: <span className="text-green-600">{proposal.roi}</span></span>
-                      </div>
-                      <Button className="w-full" onClick={() => handleTryIt(proposal.id)} disabled={proposal.tried}>
-                        <Check className="h-4 w-4 mr-2" />
-                        {proposal.tried ? "実施済み" : "やってみる"}
-                      </Button>
-                    </CardContent>
-                  </Card>
+                  <PolicyModal key={proposal.id} proposal={proposal} onTryIt={handleTryIt}>
+                    <Card className={proposal.tried ? "bg-green-50" : ""}>
+                      <CardHeader>
+                        <CardTitle className="text-base">{proposal.title}</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex justify-between text-xs mb-4">
+                          <span className="font-semibold">コスト: <span className="text-blue-600">¥{proposal.cost.toLocaleString()}</span></span>
+                          <span className="font-semibold">ROI: <span className="text-green-600">{proposal.expectedROI}倍</span></span>
+                        </div>
+                        <Button className="w-full" onClick={() => handleTryIt(proposal.id)} disabled={proposal.tried}>
+                          <Check className="h-4 w-4 mr-2" />
+                          {proposal.tried ? "実施済み" : "やってみる"}
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </PolicyModal>
                 ))}
               </CardContent>
                {triedProposalsCount > 0 && (
@@ -191,6 +194,23 @@ export default function Dashboard() {
                     </p>
                 </CardFooter>
                )}
+            </Card>
+            <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center">
+                        <TrendingUp className="h-5 w-5 mr-2 text-green-500" />
+                        あなたの成長記録
+                    </CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="text-center">
+                        <p className="text-4xl font-bold">{triedProposalsCount}</p>
+                        <p className="text-sm text-muted-foreground">今月のチャレンジ数</p>
+                    </div>
+                    <p className="text-xs text-center text-gray-500 mt-4">
+                        先月より{triedProposalsCount > 1 ? triedProposalsCount - 1 : 0}個多く挑戦しています！
+                    </p>
+                </CardContent>
             </Card>
           </div>
         </div>

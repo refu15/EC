@@ -2,7 +2,6 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import {
   BarChart3,
   TrendingUp,
@@ -13,7 +12,6 @@ import {
   ArrowUpRight,
   DollarSign,
   Brain,
-  Zap,
   Star,
 } from "lucide-react"
 import Link from "next/link"
@@ -43,22 +41,22 @@ export default function Dashboard() {
         <div className="px-4 py-6 sm:px-0">
           {/* Welcome Section */}
           <div className="mb-8">
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">ダッシュボード</h2>
-            <p className="text-gray-600">EC事業の成長をサポートする5つの主要機能（MVP）</p>
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">メインダッシュボード</h2>
+            <p className="text-gray-600">主要なKPIとAIによるワンポイント解説</p>
           </div>
 
           {/* Key Metrics */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">今月の売上</CardTitle>
+                <CardTitle className="text-sm font-medium">売上</CardTitle>
                 <DollarSign className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">¥2,450,000</div>
                 <p className="text-xs text-muted-foreground flex items-center">
                   <ArrowUpRight className="h-3 w-3 text-green-500 mr-1" />
-                  +12.5% (サンプル値)
+                  +12.5% (前月比)
                 </p>
               </CardContent>
             </Card>
@@ -69,9 +67,9 @@ export default function Dashboard() {
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">+234</div>
+                <div className="text-2xl font-bold">+234人</div>
                 <p className="text-xs text-muted-foreground flex items-center">
-                  +8.2% (サンプル値)
+                  +8.2% (前月比)
                 </p>
               </CardContent>
             </Card>
@@ -84,7 +82,7 @@ export default function Dashboard() {
               <CardContent>
                 <div className="text-2xl font-bold">3.24%</div>
                 <p className="text-xs text-muted-foreground">
-                  (サンプル値)
+                  -0.3% (前月比)
                 </p>
               </CardContent>
             </Card>
@@ -97,58 +95,29 @@ export default function Dashboard() {
               <CardContent>
                 <div className="text-2xl font-bold">¥8,750</div>
                 <p className="text-xs text-muted-foreground">
-                  (サンプル値)
+                  +5.1% (前月比)
                 </p>
               </CardContent>
             </Card>
           </div>
 
-          {/* Core Features */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <Card className="lg:col-span-3">
-                <CardHeader>
-                    <CardTitle>主要機能</CardTitle>
-                </CardHeader>
-                <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <Link href="/analytics">
-                        <Button variant="outline" className="h-32 flex flex-col w-full bg-transparent">
-                            <BarChart3 className="h-8 w-8 mb-2 text-blue-600" />
-                            <span className="text-sm text-center">顧客分析ダッシュボード</span>
-                        </Button>
-                    </Link>
-                    <Link href="/prediction">
-                        <Button variant="outline" className="h-32 flex flex-col w-full bg-transparent">
-                            <TrendingUp className="h-8 w-8 mb-2 text-green-600" />
-                            <span className="text-sm text-center">AI売上予測</span>
-                        </Button>
-                    </Link>
-                    <Link href="/campaigns">
-                        <Button variant="outline" className="h-32 flex flex-col w-full bg-transparent">
-                            <Target className="h-8 w-8 mb-2 text-purple-600" />
-                            <span className="text-sm text-center">マーケティング自動化</span>
-                        </Button>
-                    </Link>
-                    <Link href="/recommendations">
-                        <Button variant="outline" className="h-32 flex flex-col w-full bg-transparent">
-                            <Star className="h-8 w-8 mb-2 text-yellow-600" />
-                            <span className="text-sm text-center">商品レコメンデーション</span>
-                        </Button>
-                    </Link>
-                    <Link href="/support">
-                        <Button variant="outline" className="h-32 flex flex-col w-full bg-transparent">
-                            <MessageCircle className="h-8 w-8 mb-2 text-red-600" />
-                            <span className="text-sm text-center">リアルタイム顧客サポート</span>
-                        </Button>
-                    </Link>
-                     <Link href="/ai-scenario-analysis">
-                        <Button variant="outline" className="h-32 flex flex-col w-full bg-transparent">
-                            <Brain className="h-8 w-8 mb-2 text-indigo-600" />
-                            <span className="text-sm text-center">AIシナリオ分析</span>
-                        </Button>
-                    </Link>
-                </CardContent>
+          <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Brain className="h-5 w-5 mr-2 text-indigo-600" />
+                  AIによるワンポイント解説
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-700">
+                  売上と新規顧客数が順調に増加しており、特にSNS経由の流入が貢献しているようです。一方で、コンバージョン率がわずかに低下しています。
+                  カートから決済への導線に課題がないか、一度確認してみることをお勧めします。
+                </p>
+                 <p className="text-xs text-gray-500 mt-4">
+                  ※この解説はAIが生成したサンプルです。
+                </p>
+              </CardContent>
             </Card>
-          </div>
         </div>
       </main>
     </div>

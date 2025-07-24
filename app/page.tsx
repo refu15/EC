@@ -3,20 +3,52 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import {
-  BarChart3,
   TrendingUp,
   Users,
-  ShoppingCart,
-  MessageCircle,
   Target,
   ArrowUpRight,
   DollarSign,
   Brain,
-  Star,
+  Lightbulb,
+  Check,
 } from "lucide-react"
 import Link from "next/link"
+import { useState } from "react"
 
 export default function Dashboard() {
+  const [proposals, setProposals] = useState([
+    {
+      id: 1,
+      title: "リピーター向けクーポンを発行する",
+      type: "すぐできる",
+      cost: "低",
+      roi: "高",
+      tried: false,
+    },
+    {
+      id: 2,
+      title: "SNSキャンペーンを実施する",
+      type: "やや労力",
+      cost: "中",
+      roi: "高",
+      tried: false,
+    },
+    {
+      id: 3,
+      title: "サイトTOPの訴求バナーを変更",
+      type: "インパクト大",
+      cost: "中",
+      roi: "中",
+      tried: false,
+    }
+  ])
+
+  const handleTryIt = (id: number) => {
+    setProposals(proposals.map(p => p.id === id ? { ...p, tried: true } : p))
+  }
+
+  const triedProposalsCount = proposals.filter(p => p.tried).length
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -41,7 +73,12 @@ export default function Dashboard() {
         <div className="px-4 py-6 sm:px-0">
           {/* Welcome Section */}
           <div className="mb-8">
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">メインダッシュボード</h2>
+            <div className="flex justify-between items-center mb-2">
+                 <h2 className="text-3xl font-bold text-gray-900">メインダッシュボード</h2>
+                 <Link href="/upload">
+                    <Button variant="outline">データ更新</Button>
+                 </Link>
+            </div>
             <p className="text-gray-600">主要なKPIとAIによるワンポイント解説</p>
           </div>
 
@@ -90,7 +127,7 @@ export default function Dashboard() {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">平均注文額</CardTitle>
-                <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+                <TrendingUp className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">¥8,750</div>
@@ -101,23 +138,61 @@ export default function Dashboard() {
             </Card>
           </div>
 
-          <Card>
+          <div className="space-y-8">
+            <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <Brain className="h-5 w-5 mr-2 text-indigo-600" />
+                    AIによるワンポイント解説
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-gray-700">
+                    売上と新規顧客数が順調に増加しており、特にSNS経由の流入が貢献しているようです。一方で、コンバージョン率がわずかに低下しています。
+                    カートから決済への導線に課題がないか、一度確認してみることをお勧めします。
+                  </p>
+                   <p className="text-xs text-gray-500 mt-4">
+                    ※この解説はAIが生成したサンプルです。
+                  </p>
+                </CardContent>
+            </Card>
+
+            <Card>
               <CardHeader>
                 <CardTitle className="flex items-center">
-                  <Brain className="h-5 w-5 mr-2 text-indigo-600" />
-                  AIによるワンポイント解説
+                  <Lightbulb className="h-5 w-5 mr-2 text-yellow-500" />
+                  今週のおすすめ施策
                 </CardTitle>
+                <CardDescription>AIがあなたのECサイトの状況に合わせて、効果的な施策を提案します。</CardDescription>
               </CardHeader>
-              <CardContent>
-                <p className="text-sm text-gray-700">
-                  売上と新規顧客数が順調に増加しており、特にSNS経由の流入が貢献しているようです。一方で、コンバージョン率がわずかに低下しています。
-                  カートから決済への導線に課題がないか、一度確認してみることをお勧めします。
-                </p>
-                 <p className="text-xs text-gray-500 mt-4">
-                  ※この解説はAIが生成したサンプルです。
-                </p>
+              <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {proposals.map((proposal) => (
+                  <Card key={proposal.id} className={proposal.tried ? "bg-green-50" : ""}>
+                    <CardHeader>
+                      <CardTitle className="text-base">{proposal.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex justify-between text-xs mb-4">
+                        <span className="font-semibold">コスト: <span className="text-blue-600">{proposal.cost}</span></span>
+                        <span className="font-semibold">ROI: <span className="text-green-600">{proposal.roi}</span></span>
+                      </div>
+                      <Button className="w-full" onClick={() => handleTryIt(proposal.id)} disabled={proposal.tried}>
+                        <Check className="h-4 w-4 mr-2" />
+                        {proposal.tried ? "実施済み" : "やってみる"}
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
               </CardContent>
+               {triedProposalsCount > 0 && (
+                <CardFooter>
+                    <p className="text-sm text-green-600 font-semibold">
+                        今週は{triedProposalsCount}個の施策に挑戦しました！素晴らしいです！
+                    </p>
+                </CardFooter>
+               )}
             </Card>
+          </div>
         </div>
       </main>
     </div>

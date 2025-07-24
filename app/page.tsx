@@ -13,42 +13,51 @@ import {
   Check,
 } from "lucide-react"
 import Link from "next/link"
-import { useState } from "react"
+import { useAppState } from "@/hooks/use-app-state"
 import { PolicyModal } from "@/components/ui/policy-modal"
+import { useEffect, useState } from "react"
 
 export default function Dashboard() {
-  const [proposals, setProposals] = useState([
-    {
-      id: 1,
-      title: "リピーター向けクーポンを発行する",
-      type: "すぐできる",
-      cost: "低",
-      roi: "高",
-      tried: false,
-    },
-    {
-      id: 2,
-      title: "SNSキャンペーンを実施する",
-      type: "やや労力",
-      cost: "中",
-      roi: "高",
-      tried: false,
-    },
-    {
-      id: 3,
-      title: "サイトTOPの訴求バナーを変更",
-      type: "インパクト大",
-      cost: "中",
-      roi: "中",
-      tried: false,
+  const { kpis, proposals, setProposals, previousKpis } = useAppState()
+  const [aiCommentary, setAiCommentary] = useState("")
+
+  useEffect(() => {
+    if (kpis && previousKpis) {
+      fetch("/api/commentary", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ kpis, previousKpis }),
+      })
+        .then((res) => res.json())
+        .then((data) => setAiCommentary(data.commentary))
     }
-  ])
+  }, [kpis, previousKpis])
 
   const handleTryIt = (id: number) => {
     setProposals(proposals.map(p => p.id === id ? { ...p, tried: true } : p))
   }
 
   const triedProposalsCount = proposals.filter(p => p.tried).length
+
+  if (!kpis || !previousKpis) {
+    return (
+        <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center text-center">
+            <Card className="max-w-xl w-full">
+                <CardHeader>
+                    <CardTitle>ようこそ！</CardTitle>
+                    <CardDescription>まずはデータをアップロードして分析を始めましょう。</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <Link href="/upload">
+                        <Button>データ連携ページへ</Button>
+                    </Link>
+                </CardContent>
+            </Card>
+        </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -91,10 +100,10 @@ export default function Dashboard() {
                 <DollarSign className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">¥2,450,000</div>
+                <div className="text-2xl font-bold">¥{kpis.sales.toLocaleString()}</div>
                 <p className="text-xs text-muted-foreground flex items-center">
                   <ArrowUpRight className="h-3 w-3 text-green-500 mr-1" />
-                  +12.5% (前月比)
+                   {(kpis.sales / previousKpis.sales * 100 - 100).toFixed(1)}% (前月比)
                 </p>
               </CardContent>
             </Card>
@@ -105,9 +114,10 @@ export default function Dashboard() {
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">+234人</div>
+                <div className="text-2xl font-bold">+{kpis.newCustomers.toLocaleString()}人</div>
                 <p className="text-xs text-muted-foreground flex items-center">
-                  +8.2% (前月比)
+                  <ArrowUpRight className="h-3 w-3 text-green-500 mr-1" />
+                  {(kpis.newCustomers / previousKpis.newCustomers * 100 - 100).toFixed(1)}% (前月比)
                 </p>
               </CardContent>
             </Card>
@@ -118,9 +128,9 @@ export default function Dashboard() {
                 <Target className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">3.24%</div>
+                <div className="text-2xl font-bold">{kpis.conversionRate.toFixed(2)}%</div>
                 <p className="text-xs text-muted-foreground">
-                  -0.3% (前月比)
+                  {(kpis.conversionRate - previousKpis.conversionRate).toFixed(2)}% (前月比)
                 </p>
               </CardContent>
             </Card>
@@ -131,9 +141,9 @@ export default function Dashboard() {
                 <TrendingUp className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">¥8,750</div>
+                <div className="text-2xl font-bold">¥{kpis.averageOrderValue.toLocaleString()}</div>
                 <p className="text-xs text-muted-foreground">
-                  +5.1% (前月比)
+                   {(kpis.averageOrderValue / previousKpis.averageOrderValue * 100 - 100).toFixed(1)}% (前月比)
                 </p>
               </CardContent>
             </Card>
@@ -149,8 +159,7 @@ export default function Dashboard() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-gray-700">
-                    売上と新規顧客数が順調に増加しており、特にSNS経由の流入が貢献しているようです。一方で、コンバージョン率がわずかに低下しています。
-                    カートから決済への導線に課題がないか、一度確認してみることをお勧めします。
+                    {aiCommentary}
                   </p>
                    <p className="text-xs text-gray-500 mt-4">
                     ※この解説はAIが生成したサンプルです。
